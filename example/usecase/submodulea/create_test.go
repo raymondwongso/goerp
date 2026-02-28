@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/raymondwoongso/goerp/domain"
-	"github.com/raymondwoongso/goerp/domain/xerror"
+	"github.com/raymondwongso/goerp/domain"
+	"github.com/raymondwongso/goerp/domain/xerror"
 	"github.com/stretchr/testify/assert"
 )
 

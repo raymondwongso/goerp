@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raymondwoongso/goerp/domain"
+	"github.com/raymondwongso/goerp/domain"
 	"go.opentelemetry.io/otel/trace"
 )
 

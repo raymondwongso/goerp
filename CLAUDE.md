@@ -2,36 +2,36 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Prompt Response Rules
+1. Avoid overly described things that you have done. Only recap as necessary.
+
 ## Code Structure
 
 The root directory is organized into **modules** and **special folders**.
 
+**modules**:
+- `auth` — Authentication and authorization
+- `domain` — Domain objects such as struct. May have subdomain, e.g: `google` subdomain contains google related struct. Contains interfaces too. Domain may not import non-domain modules
+- `example` — Example module as base references
+
 **Special folders** (not modules):
 - `bin/` — compiled binary output
-- `cmd/` — application entrypoints (main packages)
-- `docs/` — documentation
+- `cmd/` — application entrypoints (main packages), with each subfolders representing new application.
 - `migration/` — database migration files
 - `scripts/` — utility scripts (e.g., seed data)
 
-Everything else at the root level is a **module** (e.g., `auth/`, `example/`). Each module represents a business domain and follows this structure:
+Each module follow below convention:
 
 ```
 <module>/
-├── interfaces.go        # All interfaces: Reader, Writer, UseCaseX (source for go generate)
+├── interfaces.go        # Interfaces for usecases in the module
 ├── <module>.go          # Glue/registration code: wires handlers, use cases, and repositories
 ├── store/
-│   └── postgres/        # PostgreSQL implementation of Reader/Writer interfaces
+│   └── postgres/        # PostgreSQL implementation of repository layer
 ├── usecase/<submodule>/ # Business logic — one package and one struct per use case
 ├── http/                # HTTP handlers (other protocols get their own folder: grpc/, kafka/, etc.)
 └── mock/                # MockGen-generated mocks (do not edit manually)
 ```
-
-**Module conventions:**
-- `<module>.go` is the registration entrypoint. Each module exposes a method (e.g., `RegisterHTTPHandlers(mux)`) called from `cmd/`, keeping `main.go` clean.
-- `interfaces.go` defines all use case and repository interfaces. The `//go:generate` directive here produces all mocks into `mock/`.
-- `usecase/<submodule>/` — one struct, one use case. No struct handles multiple use cases. A module may have multiple submodules, each with their own usecase package.
-- `store/` is grouped by technology (e.g., `postgres/`, and potentially `kafka/`, `slack/`, `pubsub/` in the future).
-- `domain/` is a special shared module containing structs and utilities used across all modules. It holds no inter-module business logic; any logic here must be truly domain-level (e.g., `xerror`). Domain may have subdomains.
 
 ## Architecture
 
@@ -98,12 +98,17 @@ err = xerror.AddDetail(err.(xerror.Error), "field_name", "is required")
 xerror.GetCode(err) // returns CodeUnknown if no xerror in chain
 ```
 
-HTTP status mapping from `xerror.Code` is handled by a dedicated error mapper (WIP — will live in `domain/errormapper`).
+Mapping `xerror.Code` to http status code can be done in `domain/xhttp/mapper.go`. Create new mapper in each usecase when you need a custom mapper.
 
 ## Database
 
+PostgreSQL version: 18
+
 - **Driver:** PostgreSQL via [`jmoiron/sqlx`](https://github.com/jmoiron/sqlx)
 - **Migrations:** [`pressly/goose`](https://github.com/pressly/goose) format in `migration/` — filenames prefixed with `00001_`, `00002_`, etc.
+- **Foreign Key:** Do not use foreign key. Data integration is handled in application layer
+- **UUID:** Use UUIDv7
+- **On Cascade Delete:** Do not use cascade delete
 
 ## Module Documentation
 

@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/raymondwoongso/goerp/domain"
-	"github.com/raymondwoongso/goerp/domain/xerror"
-	examplemock "github.com/raymondwoongso/goerp/example/mock"
+	"github.com/raymondwongso/goerp/domain"
+	"github.com/raymondwongso/goerp/domain/xerror"
+	examplemock "github.com/raymondwongso/goerp/example/mock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )

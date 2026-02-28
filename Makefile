@@ -1,6 +1,6 @@
 test:
-	go test ./... -coverpkg=./... -coverprofile=coverage.out
-	go tool cover -func=coverage.out
+	go test ./... -coverpkg=./... -coverprofile=coverage.txt
+	go tool cover -func=coverage.txt
 
 build:
 	go build -o=bin/api ./cmd/api

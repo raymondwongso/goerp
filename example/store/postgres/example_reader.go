@@ -6,8 +6,8 @@ import (
 	"errors"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raymondwoongso/goerp/domain"
-	"github.com/raymondwoongso/goerp/domain/xerror"
+	"github.com/raymondwongso/goerp/domain"
+	"github.com/raymondwongso/goerp/domain/xerror"
 	"go.opentelemetry.io/otel/trace"
 )
 
