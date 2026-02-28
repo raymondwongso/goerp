@@ -5,24 +5,24 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/raymondwoongso/goerp/domain"
-	"github.com/raymondwoongso/goerp/domain/xerror"
-	examplemock "github.com/raymondwoongso/goerp/example/mock"
+	"github.com/raymondwongso/goerp/domain"
+	mockdomain "github.com/raymondwongso/goerp/domain/mock"
+	"github.com/raymondwongso/goerp/domain/xerror"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
 type getTestSuite struct {
-	exampleReader *examplemock.MockExampleReader
-	exampleWriter *examplemock.MockExampleWriter
+	exampleReader *mockdomain.MockExampleReader
+	exampleWriter *mockdomain.MockExampleWriter
 }
 
 func newGetTestSuite(t *testing.T) *getTestSuite {
 	ctrl := gomock.NewController(t)
 
 	return &getTestSuite{
-		exampleReader: examplemock.NewMockExampleReader(ctrl),
-		exampleWriter: examplemock.NewMockExampleWriter(ctrl),
+		exampleReader: mockdomain.NewMockExampleReader(ctrl),
+		exampleWriter: mockdomain.NewMockExampleWriter(ctrl),
 	}
 }
 

@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE oauth_accounts (
-  id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id      UUID        NOT NULL REFERENCES users(id),
+  id           UUID        PRIMARY KEY DEFAULT uuidv7(),
+  user_id      UUID        NOT NULL,
   provider     TEXT        NOT NULL,
   provider_sub TEXT        NOT NULL,
   email        TEXT        NOT NULL,
@@ -9,8 +9,6 @@ CREATE TABLE oauth_accounts (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(provider, provider_sub)
 );
-
-CREATE INDEX idx_oauth_accounts_user ON oauth_accounts(user_id);
 
 -- +goose Down
 DROP TABLE oauth_accounts;

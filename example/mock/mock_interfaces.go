@@ -13,87 +13,9 @@ import (
 	context "context"
 	reflect "reflect"
 
-	domain "github.com/raymondwoongso/goerp/domain"
+	domain "github.com/raymondwongso/goerp/domain"
 	gomock "go.uber.org/mock/gomock"
 )
-
-// MockExampleReader is a mock of ExampleReader interface.
-type MockExampleReader struct {
-	ctrl     *gomock.Controller
-	recorder *MockExampleReaderMockRecorder
-	isgomock struct{}
-}
-
-// MockExampleReaderMockRecorder is the mock recorder for MockExampleReader.
-type MockExampleReaderMockRecorder struct {
-	mock *MockExampleReader
-}
-
-// NewMockExampleReader creates a new mock instance.
-func NewMockExampleReader(ctrl *gomock.Controller) *MockExampleReader {
-	mock := &MockExampleReader{ctrl: ctrl}
-	mock.recorder = &MockExampleReaderMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockExampleReader) EXPECT() *MockExampleReaderMockRecorder {
-	return m.recorder
-}
-
-// Get mocks base method.
-func (m *MockExampleReader) Get(ctx context.Context, id int64) (domain.Example, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, id)
-	ret0, _ := ret[0].(domain.Example)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockExampleReaderMockRecorder) Get(ctx, id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockExampleReader)(nil).Get), ctx, id)
-}
-
-// MockExampleWriter is a mock of ExampleWriter interface.
-type MockExampleWriter struct {
-	ctrl     *gomock.Controller
-	recorder *MockExampleWriterMockRecorder
-	isgomock struct{}
-}
-
-// MockExampleWriterMockRecorder is the mock recorder for MockExampleWriter.
-type MockExampleWriterMockRecorder struct {
-	mock *MockExampleWriter
-}
-
-// NewMockExampleWriter creates a new mock instance.
-func NewMockExampleWriter(ctrl *gomock.Controller) *MockExampleWriter {
-	mock := &MockExampleWriter{ctrl: ctrl}
-	mock.recorder = &MockExampleWriterMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockExampleWriter) EXPECT() *MockExampleWriterMockRecorder {
-	return m.recorder
-}
-
-// Insert mocks base method.
-func (m *MockExampleWriter) Insert(ctx context.Context, req domain.Example) (domain.Example, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Insert", ctx, req)
-	ret0, _ := ret[0].(domain.Example)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Insert indicates an expected call of Insert.
-func (mr *MockExampleWriterMockRecorder) Insert(ctx, req any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockExampleWriter)(nil).Insert), ctx, req)
-}
 
 // MockSubmoduleACreate is a mock of SubmoduleACreate interface.
 type MockSubmoduleACreate struct {

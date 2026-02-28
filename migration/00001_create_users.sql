@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE users (
-  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  id            UUID        PRIMARY KEY DEFAULT uuidv7(),
   email         TEXT        NOT NULL UNIQUE,
   display_name  TEXT,
   avatar_url    TEXT,
@@ -8,8 +8,6 @@ CREATE TABLE users (
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
-CREATE INDEX idx_users_email ON users(email);
 
 -- +goose Down
 DROP TABLE users;

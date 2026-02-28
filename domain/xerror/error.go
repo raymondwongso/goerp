@@ -8,12 +8,18 @@ import (
 type Code string
 
 const (
-	CodeDuplicate     Code = "domain.duplicate.error"
-	CodeForbidden     Code = "domain.forbidden.error"
-	CodeInternal      Code = "domain.internal.error"
-	CodeNotFound      Code = "domain.not_found.error"
-	CodeUnknown       Code = "domain.unknown.error"
-	CodeUnprocessable Code = "domain.unprocessable.error"
+	CodeConflict           Code = "domain.conflict.error"
+	CodeDuplicate          Code = "domain.duplicate.error"
+	CodeForbidden          Code = "domain.forbidden.error"
+	CodeInternal           Code = "domain.internal.error"
+	CodeInvalidParameter   Code = "domain.invalid_parameter.error"
+	CodeNotFound           Code = "domain.not_found.error"
+	CodeNotImplemented     Code = "domain.not_implemented.error"
+	CodeServiceUnavailable Code = "domain.service_unavailable.error"
+	CodeTimeout            Code = "domain.timeout.error"
+	CodeUnauthorized       Code = "domain.unauthorized.error"
+	CodeUnknown            Code = "domain.unknown.error"
+	CodeUnprocessable      Code = "domain.unprocessable.error"
 )
 
 type Error struct {

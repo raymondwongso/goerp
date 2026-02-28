@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/raymondwoongso/goerp/example"
+	"github.com/raymondwongso/goerp/domain"
 )
 
 type Get struct {
-	exampleReader example.ExampleReader
-	exampleWriter example.ExampleWriter
+	exampleReader domain.ExampleReader
+	exampleWriter domain.ExampleWriter
 }
 
-func NewGet(exampleReader example.ExampleReader, exampleWriter example.ExampleWriter) *Get {
+func NewGet(exampleReader domain.ExampleReader, exampleWriter domain.ExampleWriter) *Get {
 	return &Get{
 		exampleReader: exampleReader,
 		exampleWriter: exampleWriter,

@@ -3,8 +3,8 @@ package submodulea
 import (
 	"context"
 
-	"github.com/raymondwoongso/goerp/domain"
-	"github.com/raymondwoongso/goerp/domain/xerror"
+	"github.com/raymondwongso/goerp/domain"
+	"github.com/raymondwongso/goerp/domain/xerror"
 )
 
 type Create struct{}
