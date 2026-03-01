@@ -1,10 +1,18 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/guregu/null"
 )
+
+//go:generate mockgen -package=mockdomain -source=$GOFILE -destination=mock/mock_$GOFILE
+
+// UserWriter defines interface for User repository write operations
+type UserWriter interface {
+	Upsert(ctx context.Context, user User) (User, error)
+}
 
 type User struct {
 	ID          string      `json:"id"           db:"id"`
