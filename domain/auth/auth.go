@@ -17,6 +17,7 @@ type GoogleCallback interface {
 // GoogleLoginRequest is the request for GoogleLogin usecase
 type GoogleLoginRequest struct {
 	RedirectTo string
+	IPAddress  string
 }
 
 // GoogleLoginResult is the result for GoogleLogin usecase
@@ -28,7 +29,6 @@ type GoogleLoginResult struct {
 type GoogleCallbackRequest struct {
 	Code      string
 	State     string
-	IPAddress string
 	UserAgent string
 }
 

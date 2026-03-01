@@ -37,6 +37,11 @@ Run these before finalizing any Go file:
 - **Dependency Inversion**: handlers and use cases depend on interfaces, never concrete implementations; inject all dependencies.
 - Validate layering: `HTTP Handler → Use Case (interface) → Store (interface) → PostgreSQL`.
 
+## Configuration via ENV
+- All server/app configuration (timeouts, addresses, credentials) must come from `os.Getenv`, never hardcoded.
+- Use a local `envDuration(key string, defaultVal time.Duration) time.Duration` helper to parse `time.Duration` from env with a sane default and a log warning on parse failure.
+- ENV variable naming convention: `HTTP_READ_HEADER_TIMEOUT`, `HTTP_READ_TIMEOUT`, `HTTP_WRITE_TIMEOUT`, `HTTP_IDLE_TIMEOUT`, `API_ADDR`.
+
 ## Security
 - SQL: parameterized queries only — no string-concatenated SQL.
 - HTTP handlers: validate and sanitize all input; never expose internal error details to clients.

@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"net"
 	"net/http"
 
 	domainauth "github.com/raymondwongso/goerp/domain/auth"
@@ -43,6 +44,7 @@ func (h *Handler) GoogleLogin(w http.ResponseWriter, req *http.Request) {
 
 	res, err := h.googleLogin.Invoke(req.Context(), domainauth.GoogleLoginRequest{
 		RedirectTo: redirectTo,
+		IPAddress:  remoteIP(req.RemoteAddr),
 	})
 	if err != nil {
 		writeError(w, err)
@@ -63,7 +65,6 @@ func (h *Handler) GoogleCallback(w http.ResponseWriter, req *http.Request) {
 	res, err := h.googleCallback.Invoke(req.Context(), domainauth.GoogleCallbackRequest{
 		Code:      code,
 		State:     state,
-		IPAddress: req.RemoteAddr,
 		UserAgent: req.UserAgent(),
 	})
 	if err != nil {
@@ -84,6 +85,19 @@ func (h *Handler) GoogleCallback(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]string{"redirect_to": res.RedirectTo})
+}
+
+// remoteIP extracts the client IP from a "host:port" remote address.
+// NOTE: This uses the TCP peer address directly. If the API is deployed behind a
+// reverse proxy (Nginx, ALB, Cloudflare, etc.), RemoteAddr will be the proxy IP.
+// Add X-Forwarded-For / X-Real-IP processing when a trusted proxy is introduced.
+func remoteIP(remoteAddr string) string {
+	host, _, err := net.SplitHostPort(remoteAddr)
+	if err != nil {
+		// remoteAddr may be a Unix socket path or otherwise malformed; do not store it as an IP.
+		return ""
+	}
+	return host
 }
 
 func writeError(w http.ResponseWriter, err error) {

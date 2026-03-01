@@ -45,6 +45,7 @@ func (u *Login) Invoke(ctx context.Context, req domainauth.GoogleLoginRequest) (
 		State:        state,
 		CodeVerifier: verifier,
 		RedirectTo:   null.NewString(req.RedirectTo, req.RedirectTo != ""),
+		IPAddress:    null.NewString(req.IPAddress, req.IPAddress != ""),
 	})
 	if err != nil {
 		return domainauth.GoogleLoginResult{}, xerror.NewWithCause(xerror.CodeInternal, "failed to insert oauth state", err)

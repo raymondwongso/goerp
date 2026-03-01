@@ -1,4 +1,5 @@
 -include .env
+export
 
 GOOSE_DSN := host=localhost port=$(POSTGRES_PORT) user=$(POSTGRES_USER) password=$(POSTGRES_PASSWORD) dbname=$(POSTGRES_DB) sslmode=disable
 
@@ -19,10 +20,9 @@ install-mockgen:
 
 install-tools: install-goose install-gosec install-govulncheck install-mockgen
 
-COVER_PKGS := $(shell go list ./... | grep -Ev 'github\.com/raymondwongso/goerp/(cmd/api|auth)$$' | tr '\n' ',' | sed 's/,$$//')
-
 test:
-	go test ./... -coverpkg=$(COVER_PKGS) -coverprofile=coverage.txt
+	go test ./... -coverpkg=./... -coverprofile=coverage.txt.tmp
+	grep -v -f .coverignore coverage.txt.tmp > coverage.txt
 	go tool cover -func=coverage.txt
 
 build:

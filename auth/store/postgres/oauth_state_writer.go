@@ -29,18 +29,18 @@ func (w *oauthStateWriter) Insert(ctx context.Context, state domain.OAuthState) 
 	defer span.End()
 
 	query := `
-		INSERT INTO oauth_states (state, code_verifier, redirect_to)
-		VALUES ($1, $2, $3)
-		RETURNING state, code_verifier, redirect_to, created_at, expires_at`
+		INSERT INTO oauth_states (state, code_verifier, redirect_to, ip_address)
+		VALUES ($1, $2, $3, $4)
+		RETURNING state, code_verifier, redirect_to, ip_address, created_at, expires_at`
 
-	row := w.db.QueryRowxContext(ctx, query, state.State, state.CodeVerifier, state.RedirectTo)
+	row := w.db.QueryRowxContext(ctx, query, state.State, state.CodeVerifier, state.RedirectTo, state.IPAddress)
 	if err := row.Err(); err != nil {
-		return domain.OAuthState{}, err
+		return domain.OAuthState{}, xerror.NewWithCause(xerror.CodeInternal, "failed to insert oauth state", err)
 	}
 
 	var res domain.OAuthState
 	if err := row.StructScan(&res); err != nil {
-		return domain.OAuthState{}, err
+		return domain.OAuthState{}, xerror.NewWithCause(xerror.CodeInternal, "failed to scan oauth state", err)
 	}
 	return res, nil
 }
@@ -54,7 +54,7 @@ func (w *oauthStateWriter) DeleteByState(ctx context.Context, state string) (dom
 	query := `
 		DELETE FROM oauth_states
 		WHERE state = $1 AND expires_at > now()
-		RETURNING state, code_verifier, redirect_to, created_at, expires_at`
+		RETURNING state, code_verifier, redirect_to, ip_address, created_at, expires_at`
 
 	row := w.db.QueryRowxContext(ctx, query, state)
 	if err := row.Err(); err != nil {

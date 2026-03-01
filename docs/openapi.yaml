@@ -23,7 +23,7 @@ components:
 
 paths:
   /auth/google/login:
-    put:
+    get:
       tags: [auth]
       summary: Initiate Google OAuth2 login
       description: >
@@ -58,7 +58,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   /auth/google/callback:
-    post:
+    get:
       tags: [auth]
       summary: Handle Google OAuth2 callback
       description: >

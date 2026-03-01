@@ -43,8 +43,8 @@ func RegisterHTTPHandlers(ctx context.Context, mux *http.ServeMux, db *sqlx.DB, 
 		GoogleCallback: callbackUC,
 	})
 
-	mux.HandleFunc("PUT /auth/google/login", handler.GoogleLogin)
-	mux.HandleFunc("POST /auth/google/callback", handler.GoogleCallback)
+	mux.HandleFunc("GET /auth/google/login", handler.GoogleLogin)
+	mux.HandleFunc("GET /auth/google/callback", handler.GoogleCallback)
 
 	return nil
 }

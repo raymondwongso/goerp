@@ -66,7 +66,7 @@ func TestHandler_GoogleLogin(t *testing.T) {
 		ts := newHandlerTestSuite(t)
 
 		ts.googleLogin.EXPECT().
-			Invoke(gomock.Any(), domainauth.GoogleLoginRequest{RedirectTo: "/dashboard"}).
+			Invoke(gomock.Any(), domainauth.GoogleLoginRequest{RedirectTo: "/dashboard", IPAddress: "192.0.2.1"}).
 			Return(domainauth.GoogleLoginResult{RedirectURL: "https://accounts.google.com/o/oauth2/v2/auth?state=abc"}, nil)
 
 		req := httptest.NewRequest(http.MethodGet, "/auth/google/login?redirect_to=/dashboard", nil)
@@ -87,7 +87,7 @@ func TestHandler_GoogleLogin(t *testing.T) {
 		ts := newHandlerTestSuite(t)
 
 		ts.googleLogin.EXPECT().
-			Invoke(gomock.Any(), domainauth.GoogleLoginRequest{}).
+			Invoke(gomock.Any(), domainauth.GoogleLoginRequest{IPAddress: "192.0.2.1"}).
 			Return(domainauth.GoogleLoginResult{RedirectURL: "https://accounts.google.com/o/oauth2/v2/auth?state=abc"}, nil)
 
 		req := httptest.NewRequest(http.MethodGet, "/auth/google/login", nil)
