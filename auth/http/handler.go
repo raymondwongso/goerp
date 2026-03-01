@@ -52,7 +52,7 @@ func (h *Handler) GoogleLogin(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"redirect_url": res.RedirectURL})
+	_ = json.NewEncoder(w).Encode(map[string]string{"redirect_url": res.RedirectURL})
 }
 
 // GoogleCallback handles POST /auth/google/callback
@@ -84,7 +84,7 @@ func (h *Handler) GoogleCallback(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"redirect_to": res.RedirectTo})
+	_ = json.NewEncoder(w).Encode(map[string]string{"redirect_to": res.RedirectTo})
 }
 
 func writeError(w http.ResponseWriter, err error) {

@@ -22,17 +22,42 @@ cd goerp
 
 ```bash
 go mod download
+make install-tools
 ```
 
-**3. Set up the database:**
+**3. Configure environment:**
 
-Run migrations using [goose](https://github.com/pressly/goose):
+Copy `.env.example` to `.env` and fill in the values:
 
 ```bash
-goose -dir migration postgres "host=localhost port=5432 user=postgres password=postgres dbname=goerp sslmode=disable" up
+cp .env.example .env
 ```
 
-**4. Run the API server:**
+**4. Start Dependencies:**
+
+```bash
+make compose-up
+```
+
+Stop with:
+
+```bash
+make compose-down
+```
+
+**5. Run migrations:**
+
+```bash
+make goose-up
+```
+
+To roll back one step:
+
+```bash
+make goose-down
+```
+
+**6. Run the API server:**
 
 ```bash
 make run-api
@@ -63,10 +88,10 @@ go tool cover -html=coverage.txt
 
 ### Prerequisites
 
-Install [mockgen](https://github.com/uber-go/mock) for generating mocks:
+Install all required tools (goose, gosec, govulncheck, mockgen) with a single command:
 
 ```bash
-go install go.uber.org/mock/mockgen@latest
+make install-tools
 ```
 
 ### Project Structure
@@ -107,9 +132,24 @@ Each business module follows hexagonal architecture: HTTP handlers depend on use
 - Every use case and store method must have a corresponding unit test.
 - Mocks are generated via `go generate` — do not edit them manually.
 
+### Security Checks
+
+Run static security analysis locally:
+
+```bash
+make gosec
+```
+
+Run dependency vulnerability check locally:
+
+```bash
+make govulncheck
+```
+
 ### Submitting Changes
 
 1. Fork the repository and create a branch from `main`.
 2. Make your changes and ensure all tests pass: `make test`
 3. Ensure the build succeeds: `make build`
-4. Open a pull request against `main` with a clear description of the change.
+4. Run security checks: `make gosec` and `make govulncheck`
+5. Open a pull request against `main` with a clear description of the change.

@@ -51,7 +51,7 @@ func (h *Handler) CreateSubmoduleA(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(res)
+	_ = json.NewEncoder(w).Encode(res)
 }
 
 func (h *Handler) GetSubmoduleB(w http.ResponseWriter, req *http.Request) {
@@ -68,7 +68,7 @@ func (h *Handler) GetSubmoduleB(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
+	_ = json.NewEncoder(w).Encode(res)
 }
 
 func writeError(w http.ResponseWriter, err error) {
