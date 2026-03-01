@@ -34,6 +34,32 @@ func (ts *handlerTestSuite) newHandler() *Handler {
 	})
 }
 
+func TestNewHandler(t *testing.T) {
+	t.Run("panics when GoogleLogin is nil", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		googleCallback := authmock.NewMockGoogleCallback(ctrl)
+
+		assert.Panics(t, func() {
+			NewHandler(HandlerParam{
+				GoogleLogin:    nil,
+				GoogleCallback: googleCallback,
+			})
+		})
+	})
+
+	t.Run("panics when GoogleCallback is nil", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		googleLogin := authmock.NewMockGoogleLogin(ctrl)
+
+		assert.Panics(t, func() {
+			NewHandler(HandlerParam{
+				GoogleLogin:    googleLogin,
+				GoogleCallback: nil,
+			})
+		})
+	})
+}
+
 func TestHandler_GoogleLogin(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
