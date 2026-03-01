@@ -38,6 +38,15 @@ compose-up:
 compose-down:
 	docker compose down
 
+docs-up:
+	docker run -d --name swagger-ui -p 8081:8080 \
+		-e SWAGGER_JSON=/docs/openapi.yaml \
+		-v $(CURDIR)/docs:/docs \
+		swaggerapi/swagger-ui
+
+docs-down:
+	docker rm -f swagger-ui
+
 goose-up:
 	goose -dir migration postgres "$(GOOSE_DSN)" up
 

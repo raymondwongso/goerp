@@ -99,13 +99,12 @@ go tool cover -html=coverage.txt
 
 The OpenAPI 3.0 spec lives at [`docs/openapi.yaml`](docs/openapi.yaml).
 
-Preview it locally with [Redocly CLI](https://redocly.com/docs/cli/):
+Start a local Swagger UI server (requires Docker):
 
 ```bash
-npx @redocly/cli preview-docs docs/openapi.yaml
+make docs-up    # serves at http://localhost:8081
+make docs-down  # stop and remove the container
 ```
-
-Or use [Swagger UI](https://swagger.io/tools/swagger-ui/) / any OpenAPI-compatible viewer.
 
 ## Contributing
 
