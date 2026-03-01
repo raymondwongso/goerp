@@ -19,8 +19,10 @@ install-mockgen:
 
 install-tools: install-goose install-gosec install-govulncheck install-mockgen
 
+COVER_PKGS := $(shell go list ./... | grep -Ev 'github\.com/raymondwongso/goerp/(cmd/api|auth)$$' | tr '\n' ',' | sed 's/,$$//')
+
 test:
-	go test ./... -coverpkg=./... -coverprofile=coverage.txt
+	go test ./... -coverpkg=$(COVER_PKGS) -coverprofile=coverage.txt
 	go tool cover -func=coverage.txt
 
 build:
@@ -35,6 +37,15 @@ compose-up:
 
 compose-down:
 	docker compose down
+
+docs-up:
+	docker run -d --name swagger-ui -p 8081:8080 \
+		-e SWAGGER_JSON=/docs/openapi.yaml \
+		-v $(CURDIR)/docs:/docs \
+		swaggerapi/swagger-ui
+
+docs-down:
+	docker rm -f swagger-ui
 
 goose-up:
 	goose -dir migration postgres "$(GOOSE_DSN)" up

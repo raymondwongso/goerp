@@ -33,6 +33,17 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
+| Variable | Description |
+|---|---|
+| `POSTGRES_USER` | PostgreSQL username |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `POSTGRES_DB` | PostgreSQL database name |
+| `POSTGRES_PORT` | PostgreSQL port (default `5432`) |
+| `GOOGLE_CLIENT_ID` | Google OAuth2 client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret |
+| `GOOGLE_REDIRECT_URL` | OAuth2 redirect URI registered in Google Cloud Console |
+| `API_PORT` | HTTP server listen address (default `:8080`) |
+
 **4. Start Dependencies:**
 
 ```bash
@@ -82,6 +93,17 @@ Coverage output is written to `coverage.txt`. To view it in the browser:
 
 ```bash
 go tool cover -html=coverage.txt
+```
+
+## API Documentation
+
+The OpenAPI 3.0 spec lives at [`docs/openapi.yaml`](docs/openapi.yaml).
+
+Start a local Swagger UI server (requires Docker):
+
+```bash
+make docs-up    # serves at http://localhost:8081
+make docs-down  # stop and remove the container
 ```
 
 ## Contributing

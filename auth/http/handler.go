@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/raymondwongso/goerp/auth"
 	domainauth "github.com/raymondwongso/goerp/domain/auth"
 	"github.com/raymondwongso/goerp/domain/xhttp"
 )
@@ -13,14 +12,14 @@ const sessionCookieMaxAge = 86400 * 30 // 30 days
 
 // HandlerParam holds the dependencies for the HTTP handler
 type HandlerParam struct {
-	GoogleLogin    auth.GoogleLogin
-	GoogleCallback auth.GoogleCallback
+	GoogleLogin    domainauth.GoogleLogin
+	GoogleCallback domainauth.GoogleCallback
 }
 
 // Handler holds the HTTP handlers for the auth module
 type Handler struct {
-	googleLogin    auth.GoogleLogin
-	googleCallback auth.GoogleCallback
+	googleLogin    domainauth.GoogleLogin
+	googleCallback domainauth.GoogleCallback
 }
 
 // NewHandler creates a new Handler. Panics if any dependency is nil.
@@ -92,5 +91,11 @@ func writeError(w http.ResponseWriter, err error) {
 	if code == 0 {
 		code = http.StatusInternalServerError
 	}
+	msg := err.Error()
+	if code >= http.StatusInternalServerError {
+		msg = "internal server error"
+	}
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
+	_ = json.NewEncoder(w).Encode(map[string]string{"error": msg})
 }
