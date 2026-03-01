@@ -6,7 +6,7 @@ An ERP (Enterprise Resource Planning) backend written in Go. goerp provides core
 
 ## Requirements
 
-- Go 1.25+
+- Go 1.26+
 - PostgreSQL 18
 
 ## Running Locally
