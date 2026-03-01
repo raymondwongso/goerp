@@ -7,23 +7,23 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/raymondwongso/goerp/domain/xerror"
 	domainauth "github.com/raymondwongso/goerp/domain/auth"
-	authmock "github.com/raymondwongso/goerp/auth/mock"
+	mockdomainauth "github.com/raymondwongso/goerp/domain/auth/mock"
+	"github.com/raymondwongso/goerp/domain/xerror"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
 type handlerTestSuite struct {
-	googleLogin    *authmock.MockGoogleLogin
-	googleCallback *authmock.MockGoogleCallback
+	googleLogin    *mockdomainauth.MockGoogleLogin
+	googleCallback *mockdomainauth.MockGoogleCallback
 }
 
 func newHandlerTestSuite(t *testing.T) *handlerTestSuite {
 	ctrl := gomock.NewController(t)
 	return &handlerTestSuite{
-		googleLogin:    authmock.NewMockGoogleLogin(ctrl),
-		googleCallback: authmock.NewMockGoogleCallback(ctrl),
+		googleLogin:    mockdomainauth.NewMockGoogleLogin(ctrl),
+		googleCallback: mockdomainauth.NewMockGoogleCallback(ctrl),
 	}
 }
 
@@ -37,7 +37,7 @@ func (ts *handlerTestSuite) newHandler() *Handler {
 func TestNewHandler(t *testing.T) {
 	t.Run("panics when GoogleLogin is nil", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
-		googleCallback := authmock.NewMockGoogleCallback(ctrl)
+		googleCallback := mockdomainauth.NewMockGoogleCallback(ctrl)
 
 		assert.Panics(t, func() {
 			NewHandler(HandlerParam{
@@ -49,7 +49,7 @@ func TestNewHandler(t *testing.T) {
 
 	t.Run("panics when GoogleCallback is nil", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
-		googleLogin := authmock.NewMockGoogleLogin(ctrl)
+		googleLogin := mockdomainauth.NewMockGoogleLogin(ctrl)
 
 		assert.Panics(t, func() {
 			NewHandler(HandlerParam{
@@ -156,6 +156,7 @@ func TestHandler_GoogleCallback(t *testing.T) {
 		assert.Equal(t, "session_id", cookies[0].Name)
 		assert.Equal(t, "session-id-1", cookies[0].Value)
 		assert.True(t, cookies[0].HttpOnly)
+		assert.True(t, cookies[0].Secure)
 		assert.Equal(t, sessionCookieMaxAge, cookies[0].MaxAge)
 
 		var res map[string]string

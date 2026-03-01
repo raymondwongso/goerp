@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: goerp API
+  description: ERP backend API — authentication and business modules.
+  version: 0.1.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+
+tags:
+  - name: auth
+    description: Authentication via Google OAuth2 + OIDC
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "internal server error"
+
+paths:
+  /auth/google/login:
+    put:
+      tags: [auth]
+      summary: Initiate Google OAuth2 login
+      description: >
+        Generates a PKCE code challenge and OAuth state, stores them, and
+        returns the Google authorization URL for the frontend to redirect the user to.
+        Called by the frontend before redirecting the browser to Google.
+      parameters:
+        - name: redirect_to
+          in: query
+          required: false
+          description: URL to redirect the user to after a successful login.
+          schema:
+            type: string
+            example: /dashboard
+      responses:
+        "200":
+          description: Authorization URL generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirect_url:
+                    type: string
+                    description: Google OAuth2 authorization URL.
+                    example: "https://accounts.google.com/o/oauth2/v2/auth?client_id=...&state=abc&code_challenge=xyz"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/google/callback:
+    post:
+      tags: [auth]
+      summary: Handle Google OAuth2 callback
+      description: >
+        Called by the frontend after Google redirects back with an authorization code.
+        Validates the OAuth state, exchanges the authorization code for tokens,
+        upserts the user and OAuth account, creates a session, and sets an
+        HttpOnly `session_id` cookie.
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code returned by Google.
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: true
+          description: OAuth state token generated during login.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Login successful. Session cookie is set.
+          headers:
+            Set-Cookie:
+              description: >
+                HttpOnly session cookie (`session_id`) valid for 30 days.
+              schema:
+                type: string
+                example: "session_id=<uuid>; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirect_to:
+                    type: string
+                    description: Post-login redirect destination.
+                    example: /dashboard
+        "400":
+          description: Missing or invalid request parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Invalid or expired OAuth state, or token exchange failed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"

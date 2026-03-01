@@ -19,8 +19,10 @@ install-mockgen:
 
 install-tools: install-goose install-gosec install-govulncheck install-mockgen
 
+COVER_PKGS := $(shell go list ./... | grep -Ev 'github\.com/raymondwongso/goerp/(cmd/api|auth)$$' | tr '\n' ',' | sed 's/,$$//')
+
 test:
-	go test ./... -coverpkg=./... -coverprofile=coverage.txt
+	go test ./... -coverpkg=$(COVER_PKGS) -coverprofile=coverage.txt
 	go tool cover -func=coverage.txt
 
 build:
