@@ -110,6 +110,19 @@ PostgreSQL version: 18
 - **UUID:** Use UUIDv7
 - **On Cascade Delete:** Do not use cascade delete
 
+## Domain Conventions
+
+### Struct Location
+- All structs belong in the `domain` package (e.g., `domain/user.go`, `domain/session.go`)
+- Vendor-specific structs (Google, Slack, etc.) go in a subdomain package: `domain/google/`, `domain/slack/`, etc.
+
+### Repository Interface Location
+- Store/repository interfaces are defined in the same file as the model they operate on
+- Example: `UserWriter` interface lives in `domain/user.go`, `OAuthStateWriter` in `domain/oauth.go`
+
+### Store Layer Naming
+- Use straightforward, conventional method names: `Get`, `List`, `Create`, `Insert`, `Update`, `Upsert`, `DeleteByXxx`, `GetByXxx`
+
 ## Module Documentation
 
 Each module maintains its own `README.md` describing its purpose, design decisions, and usage.

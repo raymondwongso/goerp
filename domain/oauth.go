@@ -1,10 +1,24 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/guregu/null"
 )
+
+//go:generate mockgen -package=mockdomain -source=$GOFILE -destination=mock/mock_$GOFILE
+
+// OAuthStateWriter defines interface for OAuthState repository write operations
+type OAuthStateWriter interface {
+	Insert(ctx context.Context, state OAuthState) (OAuthState, error)
+	DeleteByState(ctx context.Context, state string) (OAuthState, error)
+}
+
+// OAuthAccountWriter defines interface for OAuthAccount repository write operations
+type OAuthAccountWriter interface {
+	Upsert(ctx context.Context, account OAuthAccount) (OAuthAccount, error)
+}
 
 type OAuthProvider string
 

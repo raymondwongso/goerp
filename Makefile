@@ -1,3 +1,6 @@
+generate:
+	go generate ./...
+
 test:
 	go test ./... -coverpkg=./... -coverprofile=coverage.txt
 	go tool cover -func=coverage.txt

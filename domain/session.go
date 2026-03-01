@@ -1,10 +1,18 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/guregu/null"
 )
+
+//go:generate mockgen -package=mockdomain -source=$GOFILE -destination=mock/mock_$GOFILE
+
+// SessionWriter defines interface for Session repository write operations
+type SessionWriter interface {
+	Insert(ctx context.Context, session Session) (Session, error)
+}
 
 type Session struct {
 	ID             string      `json:"id"              db:"id"`
