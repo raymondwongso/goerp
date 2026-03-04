@@ -26,7 +26,7 @@ func envDuration(key string, defaultVal time.Duration) time.Duration {
 	}
 	d, err := time.ParseDuration(v)
 	if err != nil {
-		log.Printf("invalid %s %q, using default %s: %v", key, v, defaultVal, err)
+		log.Printf("invalid %s %q, using default %s: %v", key, v, defaultVal, err) // #nosec G706 -- v is formatted with %q which escapes all special characters
 		return defaultVal
 	}
 	return d

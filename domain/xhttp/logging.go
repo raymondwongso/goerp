@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/raymondwongso/goerp/domain/xsanitize"
 )
 
 // responseWriter wraps http.ResponseWriter to capture the status code written by the handler.
@@ -41,10 +43,12 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		}
 
 		elapsed := time.Since(start)
+		method := xsanitize.SanitizeEscapeCharacters(r.Method)
+		path := xsanitize.SanitizeEscapeCharacters(r.URL.Path)
 		if status >= http.StatusBadRequest {
-			log.Printf("ERROR %s %s status=%d duration=%s", r.Method, r.URL.Path, status, elapsed)
+			log.Printf("ERROR %s %s status=%d duration=%s", method, path, status, elapsed) // #nosec G706 -- method and path are sanitized by SanitizeEscapeCharacters
 			return
 		}
-		log.Printf("%s %s status=%d duration=%s", r.Method, r.URL.Path, status, elapsed)
+		log.Printf("%s %s status=%d duration=%s", method, path, status, elapsed) // #nosec G706 -- method and path are sanitized by SanitizeEscapeCharacters
 	})
 }
