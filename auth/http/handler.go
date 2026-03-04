@@ -43,6 +43,7 @@ func (h *Handler) GoogleLogin(w http.ResponseWriter, req *http.Request) {
 
 	res, err := h.googleLogin.Invoke(req.Context(), domainauth.GoogleLoginRequest{
 		RedirectTo: redirectTo,
+		IPAddress:  xhttp.RemoteIP(req),
 	})
 	if err != nil {
 		writeError(w, err)
@@ -63,7 +64,6 @@ func (h *Handler) GoogleCallback(w http.ResponseWriter, req *http.Request) {
 	res, err := h.googleCallback.Invoke(req.Context(), domainauth.GoogleCallbackRequest{
 		Code:      code,
 		State:     state,
-		IPAddress: req.RemoteAddr,
 		UserAgent: req.UserAgent(),
 	})
 	if err != nil {

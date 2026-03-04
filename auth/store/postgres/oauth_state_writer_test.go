@@ -28,11 +28,11 @@ func TestOAuthStateWriter_Insert(t *testing.T) {
 		assert.NoError(t, err)
 		defer db.Close()
 
-		rows := sqlmock.NewRows([]string{"state", "code_verifier", "redirect_to", "created_at", "expires_at"}).
-			AddRow("state-abc", "verifier-xyz", "/dashboard", now, now.Add(5*time.Minute))
+		rows := sqlmock.NewRows([]string{"state", "code_verifier", "redirect_to", "ip_address", "created_at", "expires_at"}).
+			AddRow("state-abc", "verifier-xyz", "/dashboard", "192.168.1.1", now, now.Add(5*time.Minute))
 
 		mock.ExpectQuery(`INSERT INTO oauth_states`).
-			WithArgs("state-abc", "verifier-xyz", null.StringFrom("/dashboard")).
+			WithArgs("state-abc", "verifier-xyz", null.StringFrom("/dashboard"), null.StringFrom("192.168.1.1")).
 			WillReturnRows(rows)
 
 		w := NewOAuthStateWriter(tracer, sqlx.NewDb(db, "sqlmock"))
@@ -40,6 +40,7 @@ func TestOAuthStateWriter_Insert(t *testing.T) {
 			State:        "state-abc",
 			CodeVerifier: "verifier-xyz",
 			RedirectTo:   null.StringFrom("/dashboard"),
+			IPAddress:    null.StringFrom("192.168.1.1"),
 		})
 
 		assert.NoError(t, err)
@@ -56,7 +57,7 @@ func TestOAuthStateWriter_Insert(t *testing.T) {
 		defer db.Close()
 
 		mock.ExpectQuery(`INSERT INTO oauth_states`).
-			WithArgs("state-abc", "verifier-xyz", null.StringFrom("/dashboard")).
+			WithArgs("state-abc", "verifier-xyz", null.StringFrom("/dashboard"), null.StringFrom("192.168.1.1")).
 			WillReturnError(errors.New("db error"))
 
 		w := NewOAuthStateWriter(tracer, sqlx.NewDb(db, "sqlmock"))
@@ -64,6 +65,7 @@ func TestOAuthStateWriter_Insert(t *testing.T) {
 			State:        "state-abc",
 			CodeVerifier: "verifier-xyz",
 			RedirectTo:   null.StringFrom("/dashboard"),
+			IPAddress:    null.StringFrom("192.168.1.1"),
 		})
 
 		assert.Error(t, err)
@@ -84,8 +86,8 @@ func TestOAuthStateWriter_DeleteByState(t *testing.T) {
 		assert.NoError(t, err)
 		defer db.Close()
 
-		rows := sqlmock.NewRows([]string{"state", "code_verifier", "redirect_to", "created_at", "expires_at"}).
-			AddRow("state-abc", "verifier-xyz", "/dashboard", now, now.Add(5*time.Minute))
+		rows := sqlmock.NewRows([]string{"state", "code_verifier", "redirect_to", "ip_address", "created_at", "expires_at"}).
+			AddRow("state-abc", "verifier-xyz", "/dashboard", "192.168.1.1", now, now.Add(5*time.Minute))
 
 		mock.ExpectQuery(`DELETE FROM oauth_states`).
 			WithArgs("state-abc").

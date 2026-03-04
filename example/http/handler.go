@@ -8,6 +8,7 @@ import (
 
 	"github.com/raymondwongso/goerp/domain"
 	"github.com/raymondwongso/goerp/domain/xerror"
+	"github.com/raymondwongso/goerp/domain/xhttp"
 	"github.com/raymondwongso/goerp/example"
 )
 
@@ -74,23 +75,8 @@ func (h *Handler) GetSubmoduleB(w http.ResponseWriter, req *http.Request) {
 func writeError(w http.ResponseWriter, err error) {
 	var xerr xerror.Error
 	if errors.As(err, &xerr) {
-		w.WriteHeader(mapXErrorCodeToHTTP(xerr.Code))
+		w.WriteHeader(xhttp.MapError(xerr))
 		return
 	}
 	w.WriteHeader(http.StatusInternalServerError)
-}
-
-func mapXErrorCodeToHTTP(code xerror.Code) int {
-	switch code {
-	case xerror.CodeNotFound:
-		return http.StatusNotFound
-	case xerror.CodeForbidden:
-		return http.StatusForbidden
-	case xerror.CodeDuplicate:
-		return http.StatusConflict
-	case xerror.CodeUnprocessable:
-		return http.StatusUnprocessableEntity
-	default:
-		return http.StatusInternalServerError
-	}
 }

@@ -51,13 +51,13 @@ func Test_Callback(t *testing.T) {
 	validReq := domainauth.GoogleCallbackRequest{
 		Code:      "auth-code",
 		State:     "random-state",
-		IPAddress: "192.168.1.1",
 		UserAgent: "Mozilla/5.0",
 	}
 	validOAuthState := domain.OAuthState{
 		State:        "random-state",
 		CodeVerifier: "code-verifier",
 		RedirectTo:   null.StringFrom("/dashboard"),
+		IPAddress:    null.StringFrom("192.168.1.1"),
 	}
 	validClaims := domaingoogle.Claims{
 		Sub:     "google-sub-123",
@@ -108,7 +108,7 @@ func Test_Callback(t *testing.T) {
 		ts.sessionWriter.EXPECT().
 			Insert(ctx, domain.Session{
 				UserID:    "user-id-1",
-				IPAddress: null.StringFrom("192.168.1.1"),
+				IPAddress: null.StringFrom("192.168.1.1"), // carried from validOAuthState
 				UserAgent: null.StringFrom("Mozilla/5.0"),
 			}).
 			Return(validSession, nil)

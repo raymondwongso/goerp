@@ -3,3 +3,6 @@ coverage.out
 coverage.txt
 .env
 gosec.sarif
+.vscode/
+index.html
+coverage.txt.tmp

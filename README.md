@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/gh/raymondwongso/goerp/branch/main/graph/badge.svg)](https://codecov.io/gh/raymondwongso/goerp)
 
-An ERP (Enterprise Resource Planning) backend written in Go. goerp provides core business modules — authentication, authorization, and more — built on a clean hexagonal architecture with PostgreSQL as the primary data store.
+An Open-Source ERP (Enterprise Resource Planning) backend written in Go.
 
 ## Requirements
 
@@ -33,6 +33,8 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
+Or you can export the ENV variables manually.
+
 | Variable | Description |
 |---|---|
 | `POSTGRES_USER` | PostgreSQL username |
@@ -42,7 +44,12 @@ cp .env.example .env
 | `GOOGLE_CLIENT_ID` | Google OAuth2 client ID |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret |
 | `GOOGLE_REDIRECT_URL` | OAuth2 redirect URI registered in Google Cloud Console |
-| `API_PORT` | HTTP server listen address (default `:8080`) |
+| `API_ADDR` | HTTP server listen address (default `:8080`) |
+| `CORS_ALLOWED_ORIGINS` | CORS allowed origins for `Access-Control-Allow-Origin` (default `*`) |
+| `HTTP_READ_HEADER_TIMEOUT` | Max time to read request headers (default `10s`) |
+| `HTTP_READ_TIMEOUT` | Max time to read the full request (default `15s`) |
+| `HTTP_WRITE_TIMEOUT` | Max time to write the response (default `15s`) |
+| `HTTP_IDLE_TIMEOUT` | Max keep-alive idle time (default `60s`) |
 
 **4. Start Dependencies:**
 
@@ -120,17 +127,16 @@ make install-tools
 
 ```
 goerp/
-├── cmd/api/         # Application entrypoint
-├── domain/          # Shared domain structs and interfaces
-├── migration/       # goose migration files
-├── <module>/        # Business module (e.g. auth, example)
-│   ├── interfaces.go
-│   ├── <module>.go
-│   ├── http/
-│   ├── store/postgres/
-│   ├── usecase/<submodule>/
-│   └── mock/
-└── scripts/         # Utility scripts
+├── cmd/*/main.go               # Application entrypoint, e.g: cmd/api.main.go is api application entrypoint
+├── domain/                     # Shared domain structs and interfaces
+├── migration/                  # goose migration files
+├── <module>/                   # Business module (e.g. auth)
+│   ├── <module>.go             # Glue code for initiating application
+│   ├── http/                   # HTTP handlers
+│   ├── store/postgres/         # Postgres repository layer
+│   ├── usecase/<submodule>/    # Usecases
+│   └── mock/                   # custom mocks if any
+└── scripts/                    # Utility scripts
 ```
 
 Each business module follows hexagonal architecture: HTTP handlers depend on use case interfaces, use cases depend on store interfaces — never on concrete implementations.
@@ -138,12 +144,11 @@ Each business module follows hexagonal architecture: HTTP handlers depend on use
 ### Adding a New Module
 
 1. Create the module directory following the structure above.
-2. Define all interfaces in `<module>/interfaces.go`.
-3. Implement use cases in `<module>/usecase/<submodule>/`.
-4. Implement the store layer in `<module>/store/postgres/`.
-5. Implement HTTP handlers in `<module>/http/`.
-6. Generate mocks from the module root: `go generate ./<module>/...`
-7. Wire everything in `<module>/<module>.go` and register in `cmd/api`.
+2. Implement use cases in `<module>/usecase/<submodule>/`.
+3. Implement the store layer in `<module>/store/postgres/`.
+4. Implement HTTP handlers in `<module>/http/`.
+5. Generate mocks from the module root: `go generate ./<module>/...`
+6. Wire everything in `<module>/<module>.go` and register in application entrypoints (e.g: `cmd/api/main.go`)
 
 ### Guidelines
 

@@ -75,7 +75,7 @@ func (u *Callback) Invoke(ctx context.Context, req domainauth.GoogleCallbackRequ
 
 	session, err := u.sessionWriter.Insert(ctx, domain.Session{
 		UserID:    user.ID,
-		IPAddress: null.NewString(req.IPAddress, req.IPAddress != ""),
+		IPAddress: oauthState.IPAddress,
 		UserAgent: null.NewString(req.UserAgent, req.UserAgent != ""),
 	})
 	if err != nil {

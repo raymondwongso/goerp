@@ -16,7 +16,21 @@ import (
 	"go.opentelemetry.io/otel/trace/noop"
 
 	"github.com/raymondwongso/goerp/auth"
+	"github.com/raymondwongso/goerp/domain/xhttp"
 )
+
+func envDuration(key string, defaultVal time.Duration) time.Duration {
+	v := os.Getenv(key)
+	if v == "" {
+		return defaultVal
+	}
+	d, err := time.ParseDuration(v)
+	if err != nil {
+		log.Printf("invalid %s %q, using default %s: %v", key, v, defaultVal, err) // #nosec G706 -- v is formatted with %q which escapes all special characters
+		return defaultVal
+	}
+	return d
+}
 
 func main() {
 	ctx := context.Background()
@@ -52,13 +66,18 @@ func main() {
 		addr = ":8080"
 	}
 
+	corsOrigins := os.Getenv("CORS_ALLOWED_ORIGINS")
+	if corsOrigins == "" {
+		corsOrigins = "*"
+	}
+
 	server := &http.Server{
 		Addr:              addr,
-		Handler:           mux,
-		ReadHeaderTimeout: 10 * time.Second,
-		ReadTimeout:       15 * time.Second,
-		WriteTimeout:      15 * time.Second,
-		IdleTimeout:       60 * time.Second,
+		Handler:           xhttp.LoggingMiddleware(xhttp.CORSMiddleware(corsOrigins, mux)),
+		ReadHeaderTimeout: envDuration("HTTP_READ_HEADER_TIMEOUT", 10*time.Second),
+		ReadTimeout:       envDuration("HTTP_READ_TIMEOUT", 15*time.Second),
+		WriteTimeout:      envDuration("HTTP_WRITE_TIMEOUT", 15*time.Second),
+		IdleTimeout:       envDuration("HTTP_IDLE_TIMEOUT", 60*time.Second),
 	}
 
 	quit := make(chan os.Signal, 1)

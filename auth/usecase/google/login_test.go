@@ -36,7 +36,11 @@ func Test_Login(t *testing.T) {
 
 		ts.oauthStateWriter.EXPECT().
 			Insert(ctx, gomock.Any()).
-			Return(domain.OAuthState{}, nil)
+			DoAndReturn(func(_ context.Context, s domain.OAuthState) (domain.OAuthState, error) {
+				assert.Equal(t, "/dashboard", s.RedirectTo.String)
+				assert.Equal(t, "192.168.1.1", s.IPAddress.String)
+				return domain.OAuthState{}, nil
+			})
 
 		ts.tokenProvider.EXPECT().
 			GetAuthURL(gomock.Any(), gomock.Any()).
@@ -44,6 +48,7 @@ func Test_Login(t *testing.T) {
 
 		res, err := NewLogin(ts.tokenProvider, ts.oauthStateWriter).Invoke(ctx, domainauth.GoogleLoginRequest{
 			RedirectTo: "/dashboard",
+			IPAddress:  "192.168.1.1",
 		})
 
 		assert.NoError(t, err)

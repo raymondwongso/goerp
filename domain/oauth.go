@@ -41,6 +41,7 @@ type OAuthState struct {
 	State        string      `json:"state"         db:"state"`
 	CodeVerifier string      `json:"code_verifier" db:"code_verifier"`
 	RedirectTo   null.String `json:"redirect_to"   db:"redirect_to"`
+	IPAddress    null.String `json:"ip_address"    db:"ip_address"`
 	CreatedAt    time.Time   `json:"created_at"    db:"created_at"`
 	ExpiresAt    time.Time   `json:"expires_at"    db:"expires_at"`
 }
